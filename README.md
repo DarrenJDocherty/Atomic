@@ -2,6 +2,8 @@
 
 A simple menu for easy moderation of RedM servers. 
 
+https://streamable.com/00461k
+
 # Installation 
 
 This resource is dependant on the RedEM RP framework for authenticating moderators but can easily be configured to work as a standalone resource. You can download it here: https://github.com/RedEM-RP.
