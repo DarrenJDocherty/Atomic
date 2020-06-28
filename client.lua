@@ -74,7 +74,7 @@ Citizen.CreateThread(function()
 			end
 			
 			if WarMenu.Button('Ban Player', "") then
-				TriggerServerEvent("BanPlayer", GetPlayerServerId(player), GetPlayerName(GetPlayerPed(-1)))
+				TriggerServerEvent("BanPlayer", GetPlayerServerId(player), GetPlayerName(player), GetPlayerName(GetPlayerPed(-1)))
 				TriggerEvent("redem_roleplay:NotifyLeft", "Success", "Player has been banned.", "menu_textures", "menu_icon_tick", 8000)
 			end
 			
