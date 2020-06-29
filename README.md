@@ -6,14 +6,36 @@ https://streamable.com/00461k
 
 # Installation 
 
-This resource is dependant on the RedEM RP framework for authenticating moderators but can easily be configured to work as a standalone resource. You can download it here: https://github.com/RedEM-RP.
+**Dependencies**
+
+- [RedEM-RP](https://github.com/RedEM-RP/redem_roleplay)
+- [MySQL-Async](https://github.com/amakuu/mysql-async-temporary/)
+
+**Instructions**
 
 - Extract Atomic into your resources folder
+- Import atomic.sql into your database.
 - Start the Atomic resource in your server.cfg
 - In-game, use the "delete" key to open Atomic
 
 You can add new moderators by ammending the users group to "moderator" in the redemrp database. Edit line server of the server.lua file to manage which groups can access Atomic.
 
+# Usage
+
+Version 1.1 allows you to log any custom event to a log table in the database, just pass through the users server id, the log category, and what you want to log. Check example.lua for an example on how to log when a user uses the /giveitem command (from redem-rp).
+
+**Server**: TriggerEvent("Log", source, "Category", "Action")
+
+**Client**: TriggerServerEvent("Log", GetPlayerServerId(0), "Category", "Action")
+
+# Changelog
+
+**Version 1.1 - 29/06/2020**
+
+- Added action logs
+  - Atomic will now log all connect, disconnect, and reject events
+- Added support for IP bans
+
 # License 
 
-Darren Docherty (alias Troye) is the only owner of this script. You are free to use and edit the source code as you want for personal use. Any issues, reach out on Discord: Troye#7375.
+You are free to use and edit the source code as you want for personal use. Any issues, reach out on Discord: Troye#7375.
