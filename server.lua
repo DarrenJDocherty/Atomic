@@ -16,17 +16,60 @@ AddEventHandler("playerConnecting", function(name, reject, deferrals)
 	local _source = source
 	local identifier = GetSteamIdentifier(_source)
 	local networkid = GetNetworkIdentifier(_source)
+	
+	local banned = false
 
 	for user, ban in pairs(bans) do 
 		for k, v in pairs(ban) do
 			if v == identifier or v == networkid then
 				deferrals.defer()	
 				reject("You are banned from this server. Visit Discord.gg/m9Ngbmd for help.")
-				print("^8A banned user (" .. user .. ") attempted to connect from " .. networkid .. " using " .. identifier .. ".^7")
+				
+				if not banned then 
+					MySQL.Async.execute("INSERT INTO logs (user, steam, ip, category, action) VALUES (@user, @steam, @ip, @category, @action)", {['@user'] = name, ['@steam'] = identifier, ['@ip'] = networkid, ['@category'] = "Rejected", ['@action'] = "Banned user attempted to join."})
+					print("^8A banned user (" .. user .. ") attempted to connect from " .. networkid .. " using " .. identifier .. ". This connection has been rejected and logged.^7")
+					banned = true
+				end
+				
 				CancelEvent()
+			else 
+				if not banned then 
+					MySQL.Async.execute("INSERT INTO logs (user, steam, ip, category, action) VALUES (@user, @steam, @ip, @category, @action)", {['@user'] = name, ['@steam'] = identifier, ['@ip'] = networkid, ['@category'] = "Connected", ['@action'] = "User joined the server."})
+					banned = true
+				end
 			end
 		end
 	end
+end)
+
+AddEventHandler("playerDropped", function (reason)
+	local _source = source
+	local user = GetPlayerName(_source)
+	local steam = GetSteamIdentifier(_source)
+	local ip = GetNetworkIdentifier(_source)
+
+	MySQL.Async.execute("INSERT INTO logs (user, steam, ip, category, action) VALUES (@user, @steam, @ip, @category, @action)", {['@user'] = user, ['@steam'] = steam, ['@ip'] = ip, ['@category'] = "Dropped", ['@action'] = reason})
+end)
+
+RegisterServerEvent("Log")
+AddEventHandler("Log", function(source, category, action)
+	local _source = source
+	local steam = GetSteamIdentifier(_source)
+	local ip = GetNetworkIdentifier(_source)
+	
+	TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
+		if user ~= nil then
+			local user = user.getName()
+			
+			MySQL.Async.execute("INSERT INTO logs (user, steam, ip, category, action) VALUES (@user, @steam, @ip, @category, @action)", {['@user'] = user, ['@steam'] = steam, ['@ip'] = ip, ['@category'] = category, ['@action'] = action}, function(count)
+				if count <= 0 then 
+					print("Error logging action: ", user, steam, ip, action)
+				--else 
+				--	print("Success logging action: ", user, steam, ip, action)
+				end
+			end)
+		end
+    end)
 end)
 
 RegisterServerEvent("Announce")
