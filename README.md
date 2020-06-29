@@ -36,6 +36,14 @@ Version 1.1 allows you to log any custom event to a log table in the database, j
   - Atomic will now log all connect, disconnect, and reject events
 - Added support for IP bans
 
+# The master plan 
+
+- [x] Basic moderation features
+- [x] Logging tools
+- [ ] Permissions system
+- [ ] Advanced administration tools
+- [ ] Developer tools
+
 # License 
 
 You are free to use and edit the source code as you want for personal use. Any issues, reach out on Discord: Troye#7375.
