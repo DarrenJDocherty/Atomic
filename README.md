@@ -22,7 +22,7 @@ You can add new moderators by ammending the users group to "moderator" in the re
 
 # Usage
 
-Version 1.1 allows you to log any custom event to a log table in the database, just pass through the users server id, the log category, and what you want to log. Check example.lua for an example on how to log when a user uses the /giveitem command (from redem-rp).
+Version 1.1 allows you to log any custom event to a log table in the database, just pass through the users server id, the log category, and what you want to log. Check example.md for an example on how to log when a user uses the /giveitem command (from redem-rp).
 
 **Server**: TriggerEvent("Log", source, "Category", "Action")
 
