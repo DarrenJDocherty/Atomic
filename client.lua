@@ -3,6 +3,7 @@ local player = nil
 local spectating = false
 local visible = true
 local invincible = false
+local source = GetPlayerServerId(0)
 
 Citizen.CreateThread(function() 
 	while true do 
@@ -70,11 +71,13 @@ Citizen.CreateThread(function()
 			
 			if WarMenu.Button('Kick player', "") then 
 				TriggerServerEvent("KickPlayer", GetPlayerServerId(player))
+				TriggerServerEvent("Log", source, "Moderator", "Kicked player: " .. GetPlayerName(player)) -- Log example
 				TriggerEvent("redem_roleplay:NotifyLeft", "Success", "Player has been kicked.", "menu_textures", "menu_icon_tick", 8000)
 			end
 			
 			if WarMenu.Button('Ban Player', "") then
 				TriggerServerEvent("BanPlayer", GetPlayerServerId(player), GetPlayerName(player), GetPlayerName(GetPlayerPed(-1)))
+				TriggerServerEvent("Log", source, "Moderator", "Banned player: " .. GetPlayerName(player)) -- Log example
 				TriggerEvent("redem_roleplay:NotifyLeft", "Success", "Player has been banned.", "menu_textures", "menu_icon_tick", 8000)
 			end
 			
@@ -85,9 +88,11 @@ Citizen.CreateThread(function()
 			if WarMenu.Button('Toggle Visibility', "") then 
 				if visible then 
 					SetEntityVisible(PlayerPedId(), false)
+					TriggerServerEvent("Log", GetPlayerName(player), "Misc", "Visibility off.") -- Log example
 					visible = false
 				else 
 					SetEntityVisible(PlayerPedId(), true)
+					TriggerServerEvent("Log", GetPlayerName(player), "Misc", "Visibility on.") -- Log example
 					visible = true
 				end
 			end
@@ -113,6 +118,8 @@ function Spectate()
 	SetEntityVisible(PlayerPedId(), false)
 	SetEntityInvincible(PlayerPedId(), true)
 	spectating = true
+	
+	TriggerServerEvent("Log", source, "Spectate", "Spectated player: " .. GetPlayerName(player)) -- Log example
 end
 
 function CancelCamera()
@@ -125,6 +132,8 @@ function CancelCamera()
 end
 
 function Teleport()
+	TriggerServerEvent("Log", source, "Teleport", "Teleported to player: " .. GetPlayerName(player)) -- Log example
+
 	local player = GetPlayerPed(player)
 	local coords = GetEntityCoords(player)
 	lastlocation = GetEntityCoords(PlayerPedId())
@@ -146,6 +155,7 @@ function Message()
 	
     if (GetOnscreenKeyboardResult()) then
 		TriggerServerEvent("Message", GetPlayerServerId(player), GetOnscreenKeyboardResult())
+		TriggerServerEvent("Log", source, "Message", "Sent message: " .. GetOnscreenKeyboardResult() .. ". Recipient: " .. GetPlayerName(player)) -- Log example
 		TriggerEvent("redem_roleplay:NotifyLeft", "Success", "Message sent.", "menu_textures", "menu_icon_tick", 8000)
     end
 end
@@ -165,12 +175,14 @@ function Announce()
 	
     if (GetOnscreenKeyboardResult()) then
 		TriggerServerEvent("Announce", GetOnscreenKeyboardResult())
+		TriggerServerEvent("Log", source, "Announcement", "Sent global announcement: " .. GetOnscreenKeyboardResult()) -- Log example
     end
 end
 
 function Bring()
 	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
 	TriggerServerEvent("Bring", GetPlayerServerId(player), x, y, z)
+	TriggerServerEvent("Log", source, "Teleport", "Brought player: " .. GetPlayerName(player))
 end
 
 RegisterNetEvent("Bring")
@@ -193,3 +205,11 @@ function GetPlayers()
 
     return players
 end
+
+RegisterCommand("list", function()
+	local players = GetPlayers()
+	
+	for k, v in ipairs(players) do 
+		print(v, GetPlayerName(v), GetPlayerServerId(v))
+	end
+end)
