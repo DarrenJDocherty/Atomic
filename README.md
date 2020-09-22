@@ -49,4 +49,4 @@ Version 1.1 allows you to log any custom event to a log table in the database, j
 
 # License 
 
-You are free to use and edit the source code as you want for personal use. Any issues, reach out on Discord: Troye#7375.
+You are free to use and edit the source code as you want for personal use. 
